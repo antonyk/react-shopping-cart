@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Route } from 'react-router-dom';
 import data from './data';
 
@@ -16,25 +16,32 @@ function App() {
 
 	const addItem = item => {
 		// add the given item to the cart
+		setCart([...cart,item])
 
 	};
 
+	const removeItem = item => {
+		setCart(cart.filter(i => {
+			return i.id === item.id ? false : true;
+		}))
+	}
+
 	return (
 		<div className="App">
-			<CartContext.Provider cart={cart}>
-				<Navigation cart={cart} />
+			<Navigation cart={cart} />
 
-				{/* Routes */}
-				<Route exact path="/">
-					<ProductContext.Provider products={products}>
-						<Products products={products} addItem={addItem} />
-					</ProductContext.Provider>
-				</Route>
+			{/* Routes */}
+			<Route exact path="/">
+				<ProductContext.Provider value={{products, addItem}}>
+					<Products />
+				</ProductContext.Provider>
+			</Route>
 
-				<Route path="/cart">
-					<ShoppingCart cart={cart} />
-				</Route>
-			</CartContext.Provider>
+			<Route path="/cart">
+				<CartContext.Provider value={{cart, removeItem}}>
+					<ShoppingCart />
+				</CartContext.Provider>
+			</Route>
 		</div>
 	);
 }
